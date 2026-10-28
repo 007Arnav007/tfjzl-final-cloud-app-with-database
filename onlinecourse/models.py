@@ -71,6 +71,9 @@ class Lesson(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
     content = models.TextField()
 
+    def __str__(self):
+        return self.title
+
 # Enrollment model
 # <HINT> Once a user enrolled a class, an enrollment entry should be created between the user and course
 # And we could use the enrollment to track information such as exam submissions
@@ -89,27 +92,49 @@ class Enrollment(models.Model):
     mode = models.CharField(max_length=5, choices=COURSE_MODES, default=AUDIT)
     rating = models.FloatField(default=5.0)
 
+    def __str__(self):
+        return f"{self.user.username} enrolled in {self.course.name}"
+
 class Question(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
-    grade = models.IntegerField(default=50)
+    question_text = models.CharField(max_length=200)
+    grade = models.IntegerField(default=1)
+
+    @property
+    def content(self):
+        return self.question_text
+
+    @content.setter
+    def content(self, val):
+        self.question_text = val
 
     def __str__(self):
-        return "Question: " + self.content
+        return self.question_text
 
     def is_get_score(self, selected_ids):
-        all_answers = self.choice_set.filter(is_correct=True).count()
-        selected_correct = self.choice_set.filter(is_correct=True, id__in=selected_ids).count()
-        if all_answers == selected_correct:
-            return True
-        else:
-            return False
+        all_answers = set(self.choice_set.filter(is_correct=True).values_list('id', flat=True))
+        selected_set = set(selected_ids)
+        return all_answers == selected_set
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    content = models.CharField(max_length=200)
+    choice_text = models.CharField(max_length=200)
     is_correct = models.BooleanField(default=False)
+
+    @property
+    def content(self):
+        return self.choice_text
+
+    @content.setter
+    def content(self, val):
+        self.choice_text = val
+
+    def __str__(self):
+        return self.choice_text
 
 class Submission(models.Model):
     enrollment = models.ForeignKey(Enrollment, on_delete=models.CASCADE)
     choices = models.ManyToManyField(Choice)
+
+    def __str__(self):
+        return f"Submission {self.id} for enrollment {self.enrollment.id}"
