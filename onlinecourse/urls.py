@@ -1,3 +1,5 @@
+# Repository: tfjzl-final-cloud-app-with-database
+# Public GitHub URL: https://github.com/007Arnav007/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/urls.py
 from django.urls import path
 from django.conf import settings
 from django.conf.urls.static import static
@@ -22,6 +24,5 @@ urlpatterns = [
 
     # <HINT> Create a route for show_exam_result view
     path('course/<int:course_id>/submission/<int:submission_id>/result/', views.show_exam_result, name="show_exam_result"),
-    path('course/<int:course_id>/submission/<int:submission_id>/result/legacy/', views.show_exam_result, name="exam_result"),
 
  ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

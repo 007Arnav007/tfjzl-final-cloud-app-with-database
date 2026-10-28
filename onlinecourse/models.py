@@ -1,3 +1,5 @@
+# Repository: tfjzl-final-cloud-app-with-database
+# Public GitHub URL: https://github.com/007Arnav007/tfjzl-final-cloud-app-with-database/blob/main/onlinecourse/models.py
 import sys
 from django.utils.timezone import now
 try:
@@ -97,7 +99,7 @@ class Enrollment(models.Model):
 
 class Question(models.Model):
     course = models.ForeignKey(Course, on_delete=models.CASCADE)
-    question_text = models.CharField(max_length=200)
+    question_text = models.TextField()
     grade = models.IntegerField(default=1)
 
     @property
@@ -118,7 +120,7 @@ class Question(models.Model):
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE)
-    choice_text = models.CharField(max_length=200)
+    choice_text = models.CharField(max_length=100)
     is_correct = models.BooleanField(default=False)
 
     @property
